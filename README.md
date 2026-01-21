@@ -1,59 +1,37 @@
 # Frappe CRM MCP Server
 
-An [MCP](https://modelcontextprotocol.io/) server that lets AI assistants interact with [Frappe CRM](https://frappe.io/crm).
+[![PyPI Version](https://img.shields.io/pypi/v/frappe-crm-mcp.svg)](https://pypi.org/project/frappe-crm-mcp/)
+[![License](https://img.shields.io/pypi/l/frappe-crm-mcp.svg)](https://github.com/joehaddad2000/frappe-crm-mcp/blob/main/LICENSE)
+[![Python](https://img.shields.io/pypi/pyversions/frappe-crm-mcp.svg)](https://pypi.org/project/frappe-crm-mcp/)
 
-## Why?
+Connect your AI tools to [Frappe CRM](https://frappe.io/crm) using the [Model Context Protocol](https://modelcontextprotocol.io/).
 
-Frappe CRM is a powerful open-source CRM. This MCP server gives AI assistants (like Claude) direct access to your CRM data, enabling natural language interactions:
+Once connected, your AI assistants can interact with your CRM data:
 
 - "Show me all open deals"
 - "Create a lead for John at Acme Corp"
 - "What's happening with the Tesla deal?"
 - "Add a note to the Stripe deal about our call today"
 
+## Prerequisites
+
+1. A Frappe CRM instance (cloud or self-hosted)
+2. API credentials (see [Generate API Keys](#generate-api-keys))
+3. Python 3.11+ and [uv](https://docs.astral.sh/uv/) (for local installation)
+
 ## Installation
 
-Requires Python 3.11+.
-
-### From PyPI (recommended)
-
-```bash
-# Using uvx (no install needed)
-uvx frappe-crm-mcp
-
-# Or install with pip
-pip install frappe-crm-mcp
-```
-
-### From source
-
-```bash
-git clone https://github.com/joehaddad2000/frappe-crm-mcp.git
-cd frappe-crm-mcp
-uv sync
-```
-
-## Configuration
-
-### 1. Generate Frappe API Keys
-
-1. Log into your Frappe CRM instance
-2. Go to **User** → your user → **API Access**
-3. Click **Generate Keys**
-4. Save the API Key and API Secret
-
-### 2. Add to Claude Code
+### Claude Code
 
 ```bash
 claude mcp add frappe-crm \
-  -s user \
   -e FRAPPE_URL=https://your-site.frappe.cloud \
   -e FRAPPE_API_KEY=your_api_key \
   -e FRAPPE_API_SECRET=your_api_secret \
   -- uvx frappe-crm-mcp
 ```
 
-### 3. Add to Claude Desktop
+### Claude Desktop
 
 Add to your `claude_desktop_config.json`:
 
@@ -73,53 +51,87 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
+### Cursor
+
+Add to `.cursor/mcp.json` in your project:
+
+```json
+{
+  "mcpServers": {
+    "frappe-crm": {
+      "command": "uvx",
+      "args": ["frappe-crm-mcp"],
+      "env": {
+        "FRAPPE_URL": "https://your-site.frappe.cloud",
+        "FRAPPE_API_KEY": "your_api_key",
+        "FRAPPE_API_SECRET": "your_api_secret"
+      }
+    }
+  }
+}
+```
+
+### Windsurf
+
+Add to your Windsurf MCP config:
+
+```json
+{
+  "mcpServers": {
+    "frappe-crm": {
+      "command": "uvx",
+      "args": ["frappe-crm-mcp"],
+      "env": {
+        "FRAPPE_URL": "https://your-site.frappe.cloud",
+        "FRAPPE_API_KEY": "your_api_key",
+        "FRAPPE_API_SECRET": "your_api_secret"
+      }
+    }
+  }
+}
+```
+
+## Generate API Keys
+
+1. Log into your Frappe CRM instance
+2. Go to **User** → your user → **API Access**
+3. Click **Generate Keys**
+4. Copy the **API Key** and **API Secret** (secret is only shown once)
+
 ## Available Tools
 
-### Deals
-- `deals_list` - List deals with optional filters
-- `deals_get` - Get a single deal
-- `deals_create` - Create a new deal
-- `deals_update` - Update deal fields
-
-### Leads
-- `leads_list` - List leads with optional filters
-- `leads_get` - Get a single lead
-- `leads_update` - Update lead fields
-- `leads_convert` - Convert a lead to a deal
-
-### Contacts
-- `contacts_search` - Search contacts by name/email
-- `contacts_get` - Get a single contact
-- `contacts_get_deals` - Get deals linked to a contact
-
-### Organizations
-- `organizations_list` - List organizations
-- `organizations_get` - Get a single organization
-
-### Notes
-- `notes_list` - List notes on a deal or lead
-- `notes_add` - Add a note to a deal or lead
-
-### Tasks
-- `tasks_list` - List tasks with optional filters
-- `tasks_get` - Get a single task
-- `tasks_add` - Create a new task
-- `tasks_update` - Update task fields
-
-### Activities
-- `activities_get` - Get activity timeline for a deal or lead
+| Tool | Description |
+|------|-------------|
+| `deals_list` | List deals with optional filters |
+| `deals_get` | Get a single deal by ID |
+| `deals_create` | Create a new deal |
+| `deals_update` | Update deal fields |
+| `leads_list` | List leads with optional filters |
+| `leads_get` | Get a single lead by ID |
+| `leads_update` | Update lead fields |
+| `leads_convert` | Convert a lead to a deal |
+| `contacts_search` | Search contacts by name or email |
+| `contacts_get` | Get a single contact by ID |
+| `contacts_get_deals` | Get deals linked to a contact |
+| `organizations_list` | List organizations |
+| `organizations_get` | Get a single organization by ID |
+| `notes_list` | List notes on a deal or lead |
+| `notes_add` | Add a note to a deal or lead |
+| `tasks_list` | List tasks with optional filters |
+| `tasks_get` | Get a single task by ID |
+| `tasks_add` | Create a new task |
+| `tasks_update` | Update task fields |
+| `activities_get` | Get activity timeline for a deal or lead |
 
 ## Development
 
 ```bash
-# Install dependencies
+git clone https://github.com/joehaddad2000/frappe-crm-mcp.git
+cd frappe-crm-mcp
 uv sync
 
-# Run the server (for testing)
-FRAPPE_URL=... FRAPPE_API_KEY=... FRAPPE_API_SECRET=... uv run python -m frappe_crm_mcp.server
-
-# Test with FastMCP dev tools
-FRAPPE_URL=... FRAPPE_API_KEY=... FRAPPE_API_SECRET=... uv run fastmcp dev src/frappe_crm_mcp/server.py
+# Run with environment variables
+FRAPPE_URL=... FRAPPE_API_KEY=... FRAPPE_API_SECRET=... uv run frappe-crm-mcp
 ```
 
 ## License
