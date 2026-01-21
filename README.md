@@ -126,6 +126,12 @@ Add to your Windsurf MCP config:
 | `tasks_add` | Create a new task |
 | `tasks_update` | Update task fields |
 | `activities_get` | Get activity timeline for a deal or lead |
+| `deal_statuses_list` | List all deal pipeline statuses |
+| `deal_statuses_create` | Create a new deal status |
+| `deal_statuses_update` | Update a deal status |
+| `lead_statuses_list` | List all lead pipeline statuses |
+| `lead_statuses_create` | Create a new lead status |
+| `lead_statuses_update` | Update a lead status |
 
 ## Development
 

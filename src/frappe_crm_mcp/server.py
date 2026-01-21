@@ -15,16 +15,12 @@ from frappe_crm_mcp.tools import (
     leads,
     notes,
     organizations,
+    statuses,
     tasks,
 )
 
-deals.register(mcp, get_client)
-leads.register(mcp, get_client)
-contacts.register(mcp, get_client)
-organizations.register(mcp, get_client)
-notes.register(mcp, get_client)
-tasks.register(mcp, get_client)
-activities.register(mcp, get_client)
+for module in [deals, leads, contacts, organizations, notes, tasks, activities, statuses]:
+    module.register(mcp, get_client)
 
 
 def main() -> None:
