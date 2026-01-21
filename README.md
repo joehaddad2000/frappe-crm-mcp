@@ -112,9 +112,13 @@ Add to your Windsurf MCP config:
 | `leads_convert` | Convert a lead to a deal |
 | `contacts_search` | Search contacts by name or email |
 | `contacts_get` | Get a single contact by ID |
+| `contacts_create` | Create a new contact |
+| `contacts_update` | Update contact fields |
 | `contacts_get_deals` | Get deals linked to a contact |
 | `organizations_list` | List organizations |
 | `organizations_get` | Get a single organization by ID |
+| `organizations_create` | Create a new organization |
+| `organizations_update` | Update organization fields |
 | `notes_list` | List notes on a deal or lead |
 | `notes_add` | Add a note to a deal or lead |
 | `tasks_list` | List tasks with optional filters |

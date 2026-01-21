@@ -67,3 +67,77 @@ def register(mcp: FastMCP, get_client: Callable[[], FrappeClient]) -> None:
             "crm.api.contact.get_linked_deals",
             contact=contact,
         )
+
+    @mcp.tool(annotations={"readOnlyHint": False})
+    async def contacts_create(
+        first_name: Annotated[str, "First name (required)"],
+        last_name: Annotated[str | None, "Last name"] = None,
+        email: Annotated[str | None, "Email address"] = None,
+        phone: Annotated[str | None, "Phone number"] = None,
+        mobile_no: Annotated[str | None, "Mobile number"] = None,
+        company_name: Annotated[str | None, "Company/organization name"] = None,
+        designation: Annotated[str | None, "Job title/designation"] = None,
+        salutation: Annotated[str | None, "Salutation (Mr, Ms, Dr, etc.)"] = None,
+    ) -> dict[str, Any]:
+        """Create a new contact.
+
+        Returns the created contact with its generated ID.
+        """
+        client = get_client()
+        data: dict[str, Any] = {"first_name": first_name}
+
+        if last_name:
+            data["last_name"] = last_name
+        if company_name:
+            data["company_name"] = company_name
+        if designation:
+            data["designation"] = designation
+        if salutation:
+            data["salutation"] = salutation
+
+        # Email and phone are stored in child tables
+        if email:
+            data["email_ids"] = [{"email_id": email, "is_primary": 1}]
+        if phone:
+            data["phone_nos"] = [{"phone": phone, "is_primary_phone": 1}]
+        if mobile_no:
+            if "phone_nos" in data:
+                data["phone_nos"].append(
+                    {"phone": mobile_no, "is_primary_mobile_no": 1}
+                )
+            else:
+                data["phone_nos"] = [{"phone": mobile_no, "is_primary_mobile_no": 1}]
+
+        return await client.create_doc("Contact", data)
+
+    @mcp.tool(annotations={"readOnlyHint": False})
+    async def contacts_update(
+        name: Annotated[str, "The contact ID to update"],
+        first_name: Annotated[str | None, "First name"] = None,
+        last_name: Annotated[str | None, "Last name"] = None,
+        company_name: Annotated[str | None, "Company/organization name"] = None,
+        designation: Annotated[str | None, "Job title/designation"] = None,
+        salutation: Annotated[str | None, "Salutation (Mr, Ms, Dr, etc.)"] = None,
+    ) -> dict[str, Any]:
+        """Update a contact's fields.
+
+        Only provided fields will be updated. Returns the updated contact.
+        Note: To update email/phone, use the Frappe UI as they are stored in child tables.
+        """
+        client = get_client()
+        data = {
+            k: v
+            for k, v in {
+                "first_name": first_name,
+                "last_name": last_name,
+                "company_name": company_name,
+                "designation": designation,
+                "salutation": salutation,
+            }.items()
+            if v is not None
+        }
+
+        if not data:
+            return await client.get_doc("Contact", name)
+
+        return await client.update_doc("Contact", name, data)
