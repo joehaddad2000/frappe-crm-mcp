@@ -1,6 +1,7 @@
 # Frappe CRM MCP Server
 
 [![PyPI Version](https://img.shields.io/pypi/v/frappe-crm-mcp.svg)](https://pypi.org/project/frappe-crm-mcp/)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/frappe-crm-mcp?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/frappe-crm-mcp)
 [![License](https://img.shields.io/pypi/l/frappe-crm-mcp.svg)](https://github.com/joehaddad2000/frappe-crm-mcp/blob/main/LICENSE)
 [![Python](https://img.shields.io/pypi/pyversions/frappe-crm-mcp.svg)](https://pypi.org/project/frappe-crm-mcp/)
 
