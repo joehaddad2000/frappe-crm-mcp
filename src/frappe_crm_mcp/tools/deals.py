@@ -64,9 +64,15 @@ def register(mcp: FastMCP, get_client: Callable[[], FrappeClient]) -> None:
         name: Annotated[str, "The deal ID to update"],
         status: Annotated[str | None, "New status (e.g., Open, Won, Lost)"] = None,
         deal_value: Annotated[float | None, "Deal value amount"] = None,
+        expected_deal_value: Annotated[
+            float | None, "Expected deal value for forecasting"
+        ] = None,
         probability: Annotated[int | None, "Win probability percentage (0-100)"] = None,
         expected_closure_date: Annotated[
             str | None, "Expected closure date (YYYY-MM-DD)"
+        ] = None,
+        closed_date: Annotated[
+            str | None, "Actual closure date (YYYY-MM-DD)"
         ] = None,
     ) -> dict[str, Any]:
         """Update a deal's fields.
@@ -79,8 +85,10 @@ def register(mcp: FastMCP, get_client: Callable[[], FrappeClient]) -> None:
             for k, v in {
                 "status": status,
                 "deal_value": deal_value,
+                "expected_deal_value": expected_deal_value,
                 "probability": probability,
                 "expected_closure_date": expected_closure_date,
+                "closed_date": closed_date,
             }.items()
             if v is not None
         }
@@ -114,3 +122,65 @@ def register(mcp: FastMCP, get_client: Callable[[], FrappeClient]) -> None:
             data["deal_value"] = deal_value
 
         return await client.create_doc("CRM Deal", data)
+
+    @mcp.tool(annotations={"readOnlyHint": True})
+    async def deals_get_contacts(
+        name: Annotated[str, "The deal ID"],
+    ) -> Any:
+        """Get all contacts linked to a deal.
+
+        Returns contacts with their details and primary status.
+        """
+        client = get_client()
+        return await client.call_method(
+            "crm.fcrm.doctype.crm_deal.api.get_deal_contacts",
+            name=name,
+        )
+
+    @mcp.tool(annotations={"readOnlyHint": False})
+    async def deals_add_contact(
+        deal: Annotated[str, "The deal ID"],
+        contact: Annotated[str, "The contact ID to link"],
+    ) -> bool:
+        """Link a contact to a deal.
+
+        Adds a contact to the deal's contacts list. Returns True on success.
+        """
+        client = get_client()
+        return await client.call_method(
+            "crm.fcrm.doctype.crm_deal.crm_deal.add_contact",
+            deal=deal,
+            contact=contact,
+        )
+
+    @mcp.tool(annotations={"readOnlyHint": False})
+    async def deals_remove_contact(
+        deal: Annotated[str, "The deal ID"],
+        contact: Annotated[str, "The contact ID to unlink"],
+    ) -> bool:
+        """Unlink a contact from a deal.
+
+        Removes a contact from the deal's contacts list. Returns True on success.
+        """
+        client = get_client()
+        return await client.call_method(
+            "crm.fcrm.doctype.crm_deal.crm_deal.remove_contact",
+            deal=deal,
+            contact=contact,
+        )
+
+    @mcp.tool(annotations={"readOnlyHint": False})
+    async def deals_set_primary_contact(
+        deal: Annotated[str, "The deal ID"],
+        contact: Annotated[str, "The contact ID to set as primary"],
+    ) -> bool:
+        """Set a contact as the primary contact for a deal.
+
+        The contact must already be linked to the deal. Returns True on success.
+        """
+        client = get_client()
+        return await client.call_method(
+            "crm.fcrm.doctype.crm_deal.crm_deal.set_primary_contact",
+            deal=deal,
+            contact=contact,
+        )

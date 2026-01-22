@@ -3,11 +3,6 @@
 from fastmcp import FastMCP
 
 from frappe_crm_mcp.client import get_client
-
-# Create the MCP server
-mcp = FastMCP(name="Frappe CRM")
-
-# Import and register all tools
 from frappe_crm_mcp.tools import (
     activities,
     contacts,
@@ -19,6 +14,10 @@ from frappe_crm_mcp.tools import (
     tasks,
 )
 
+# Create the MCP server
+mcp = FastMCP(name="Frappe CRM")
+
+# Register all tools
 for module in [deals, leads, contacts, organizations, notes, tasks, activities, statuses]:
     module.register(mcp, get_client)
 
