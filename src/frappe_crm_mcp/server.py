@@ -8,6 +8,7 @@ from frappe_crm_mcp.tools import (
     contacts,
     deals,
     leads,
+    meta,
     notes,
     organizations,
     statuses,
@@ -18,7 +19,17 @@ from frappe_crm_mcp.tools import (
 mcp = FastMCP(name="Frappe CRM")
 
 # Register all tools
-for module in [deals, leads, contacts, organizations, notes, tasks, activities, statuses]:
+for module in [
+    deals,
+    leads,
+    contacts,
+    organizations,
+    notes,
+    tasks,
+    activities,
+    statuses,
+    meta,
+]:
     module.register(mcp, get_client)
 
 

@@ -138,6 +138,7 @@ Add to your Windsurf MCP config:
 | `lead_statuses_list` | List all lead pipeline statuses |
 | `lead_statuses_create` | Create a new lead status |
 | `lead_statuses_update` | Update a lead status |
+| `get_field_options` | Get allowed values for any constrained field (Link/Select types) |
 
 ## Development
 

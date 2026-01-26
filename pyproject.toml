@@ -1,6 +1,6 @@
 [project]
 name = "frappe-crm-mcp"
-version = "0.0.5"
+version = "0.0.6"
 description = "MCP server for Frappe CRM - interact with your CRM through AI assistants"
 readme = "README.md"
 license = "MIT"

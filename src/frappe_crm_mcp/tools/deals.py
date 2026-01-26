@@ -71,9 +71,7 @@ def register(mcp: FastMCP, get_client: Callable[[], FrappeClient]) -> None:
         expected_closure_date: Annotated[
             str | None, "Expected closure date (YYYY-MM-DD)"
         ] = None,
-        closed_date: Annotated[
-            str | None, "Actual closure date (YYYY-MM-DD)"
-        ] = None,
+        closed_date: Annotated[str | None, "Actual closure date (YYYY-MM-DD)"] = None,
     ) -> dict[str, Any]:
         """Update a deal's fields.
 
