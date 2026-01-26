@@ -86,14 +86,13 @@ def register(mcp: FastMCP, get_client: Callable[[], FrappeClient]) -> None:
         client = get_client()
         data: dict[str, Any] = {"first_name": first_name}
 
-        if last_name:
-            data["last_name"] = last_name
-        if company_name:
-            data["company_name"] = company_name
-        if designation:
-            data["designation"] = designation
-        if salutation:
-            data["salutation"] = salutation
+        optional = {
+            "last_name": last_name,
+            "company_name": company_name,
+            "designation": designation,
+            "salutation": salutation,
+        }
+        data.update({k: v for k, v in optional.items() if v is not None})
 
         # Email and phone are stored in child tables
         if email:

@@ -95,6 +95,39 @@ def register(mcp: FastMCP, get_client: Callable[[], FrappeClient]) -> None:
         return await client.update_doc("CRM Lead", name, data)
 
     @mcp.tool(annotations={"readOnlyHint": False})
+    async def leads_create(
+        first_name: Annotated[str, "First name (required)"],
+        last_name: Annotated[str | None, "Last name"] = None,
+        email: Annotated[str | None, "Email address"] = None,
+        mobile_no: Annotated[str | None, "Mobile phone number"] = None,
+        organization: Annotated[str | None, "Organization/company name"] = None,
+        status: Annotated[str, "Lead status"] = "New",
+        source: Annotated[str | None, "Lead source (e.g., Website, Referral)"] = None,
+        job_title: Annotated[str | None, "Job title/designation"] = None,
+    ) -> dict[str, Any]:
+        """Create a new lead.
+
+        Returns the created lead with its generated ID.
+        """
+        client = get_client()
+        data: dict[str, Any] = {
+            "first_name": first_name,
+            "status": status,
+        }
+
+        optional = {
+            "last_name": last_name,
+            "email": email,
+            "mobile_no": mobile_no,
+            "organization": organization,
+            "source": source,
+            "job_title": job_title,
+        }
+        data.update({k: v for k, v in optional.items() if v is not None})
+
+        return await client.create_doc("CRM Lead", data)
+
+    @mcp.tool(annotations={"readOnlyHint": False})
     async def leads_convert(
         name: Annotated[str, "The lead ID to convert to a deal"],
     ) -> Any:

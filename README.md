@@ -113,6 +113,7 @@ Add to your Windsurf MCP config:
 | `deals_set_primary_contact` | Set a deal's primary contact |
 | `leads_list` | List leads with optional filters |
 | `leads_get` | Get a single lead by ID |
+| `leads_create` | Create a new lead |
 | `leads_update` | Update lead fields |
 | `leads_convert` | Convert a lead to a deal |
 | `contacts_search` | Search contacts by name or email |
